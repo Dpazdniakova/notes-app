@@ -1,6 +1,7 @@
 package ie.setu
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import utils.readNextChar
 import utils.readNextInt
 import java.lang.System.exit
 
