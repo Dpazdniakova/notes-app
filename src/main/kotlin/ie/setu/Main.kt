@@ -1,8 +1,10 @@
 package ie.setu
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import utils.readNextInt
 import java.lang.System.exit
 
+val logger = KotlinLogging.logger {}
 fun main() {
     runMenu()
 }
@@ -42,22 +44,22 @@ fun runMenu() {
 
 }
 fun addNote(){
-    println("You chose Add Note")
+    logger.info { "addNote() function invoked" }
 }
 
 fun listNotes(){
-    println("You chose List Notes")
+    logger.info { "listNotes() function invoked" }
 }
 
 fun updateNote(){
-    println("You chose Update Note")
+    logger.info { "updateNote() function invoked" }
 }
 
 fun deleteNote(){
-    println("You chose Delete Note")
+    logger.info { "deleteNote() function invoked" }
 }
 
 fun exitApp(){
-    println("Exiting...bye")
+    logger.info { "ExitApp() function invoked" }
     exit(0)
 }
