@@ -88,4 +88,22 @@ class NoteAPITest {
             assertTrue(notesString.contains("summer holiday"))
         }
     }
+    @Nested
+    inner class ListNoteType {
+        @Test
+        fun `listActiveNotes no active notes` () {
+            val newNote = Note("Study Lambdas", 1, "College", true)
+            val newNote2 = Note("Summer bucket list", 1, "Summer", true)
+            emptyNotes?.add(newNote)
+            emptyNotes?.add(newNote2)
+            assertTrue(populatedNotes!!.listActiveNotes().lowercase().contains("no notes"))
+        }
+        @Test
+        fun `listActiveNotes with active notes` () {
+            val newNote = Note("Learn Kotlin", 1, "Education", false)
+            populatedNotes!!.add(newNote)
+            assertTrue(populatedNotes!!.listActiveNotes().lowercase().contains(newNote.noteTitle.lowercase()))
+
+        }
+    }
 }
