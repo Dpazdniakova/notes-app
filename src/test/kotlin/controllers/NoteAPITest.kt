@@ -88,4 +88,62 @@ class NoteAPITest {
             assertTrue(notesString.contains("summer holiday"))
         }
     }
+    @Nested
+    inner class ListNoteType {
+        @Test
+        fun `listActiveNotes no active notes` () {
+//            val newNote = Note("Study Lambdas", 1, "College", true)
+//            val newNote2 = Note("Summer bucket list", 1, "Summer", true)
+//            emptyNotes?.add(newNote)
+//            emptyNotes?.add(newNote2)
+//            assertTrue(emptyNotes!!.listActiveNotes().lowercase().contains("no notes"))
+            val result = emptyNotes?.listActiveNotes()
+            assertEquals("No active notes", result)
+        }
+        @Test
+        fun `listActiveNotes with active notes` () {
+            val newNote = Note("Learn Kotlin", 1, "Education", false)
+            populatedNotes!!.add(newNote)
+            assertTrue(populatedNotes!!.listActiveNotes().lowercase().contains(newNote.noteTitle.lowercase()))
+
+        }
+        @Test
+        fun `listArchivedNotes no archived notes` () {
+            val result = populatedNotes?.listArchivedNotes()
+            assertEquals("No archived notes", result)
+
+        }
+        @Test
+        fun `listArchivedNotes with archived notes` () {
+            val newNote = Note("Learn Kotlin", 1, "Education", true)
+            populatedNotes?.add(newNote)
+            assertTrue(populatedNotes!!.listArchivedNotes().lowercase().contains(newNote.noteTitle.lowercase()))
+
+        }
+        @Test
+        fun testNumberOfArchivedNotes() {
+            assertEquals(0, emptyNotes?.numberOfArchivedNotes())
+
+            val note1 = Note("Active Note 1", 1, "Tests", true)
+            emptyNotes?.add(note1)
+
+            assertEquals(1, emptyNotes?.numberOfArchivedNotes())
+
+            val note2 = Note("Active Note 2", 1, "Tests", true)
+            emptyNotes?.add(note2)
+
+            assertEquals(2, emptyNotes?.numberOfArchivedNotes())
+        }
+
+        @Test
+        fun testNumberOfActiveNotes() {
+            val note1 = Note("Active Note 1", 1, "Tests", true)
+            emptyNotes?.add(note1)
+
+            assertEquals(0, emptyNotes?.numberOfActiveNotes())
+            assertEquals(5, populatedNotes?.numberOfActiveNotes())
+
+        }
+    }
+
 }
