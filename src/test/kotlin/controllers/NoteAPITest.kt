@@ -92,11 +92,6 @@ class NoteAPITest {
     inner class ListNoteType {
         @Test
         fun `listActiveNotes no active notes` () {
-//            val newNote = Note("Study Lambdas", 1, "College", true)
-//            val newNote2 = Note("Summer bucket list", 1, "Summer", true)
-//            emptyNotes?.add(newNote)
-//            emptyNotes?.add(newNote2)
-//            assertTrue(emptyNotes!!.listActiveNotes().lowercase().contains("no notes"))
             val result = emptyNotes?.listActiveNotes()
             assertEquals("No active notes", result)
         }
@@ -144,6 +139,27 @@ class NoteAPITest {
             assertEquals(5, populatedNotes?.numberOfActiveNotes())
 
         }
+    }
+    @Nested
+    inner class ListNotePriority  {
+        @Test
+        fun `test listNotesByPriority with no notes` () {
+            assertTrue(emptyNotes!!.listNotesByPriority(1).lowercase().contains("no notes"))
+        }
+        @Test
+        fun `test listNotesByPriority with notes` () {
+            assertTrue(populatedNotes!!.listNotesByPriority(5).lowercase().contains(learnKotlin?.noteTitle!!.lowercase() ))
+
+        }
+        @Test
+        fun `test numberOfNotesByPriority` () {
+            assertEquals(1, populatedNotes?.numberOfNotesByPriority(1))
+            assertEquals(2, populatedNotes?.numberOfNotesByPriority(4))
+
+        }
+
+
+
     }
 
 }
