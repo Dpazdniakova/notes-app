@@ -76,5 +76,35 @@ class NoteAPI {
         }
         return n
     }
+    fun listNotesByPriority(priority: Int): String {
+        return if (notes.isEmpty()) {
+            "No notes stored"
+        } else {
+            var listOfNotes = ""
+            for (note in notes) {
+                if (note.notePriority == priority){
+                    listOfNotes += "${notes.indexOf(note)}: ${note}"
+                }
+            }
+            listOfNotes
+        }
+    }
+
+    fun numberOfNotesByPriority(priority: Int): Int {
+        var n = 0
+        for (note in notes) {
+            if (note.notePriority == priority) {
+                n++
+            }
+        }
+        return n
+    }
+    fun deleteNote(indexToDelete: Int): Note? {
+       return if (isValidListIndex(indexToDelete, notes)) {
+           notes.removeAt(indexToDelete)
+       } else null
+
+    }
+
 }
 
