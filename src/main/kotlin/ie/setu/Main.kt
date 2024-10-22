@@ -3,11 +3,13 @@ package ie.setu
 import controllers.NoteAPI
 import io.github.oshai.kotlinlogging.KotlinLogging
 import models.Note
-import utils.readNextChar
+import persistence.JSONSerializer
+import persistence.XMLSerializer
 import utils.readNextInt
 import utils.readNextLine
+import java.io.File
 import java.lang.System.exit
-private val noteAPI = NoteAPI()
+private val noteAPI = NoteAPI(JSONSerializer(File("notes.json")))
 val logger = KotlinLogging.logger {}
 fun main() {
     runMenu()
@@ -23,6 +25,8 @@ fun mainMenu() : Int {
           |   2) List all notes            |
           |   3) Update a note             |
           |   4) Delete a note             |
+          |   5) Save notes                |
+          |   6) Load notes                |
           ----------------------------------
           |   0) Exit                      |
           ----------------------------------
@@ -38,6 +42,8 @@ fun runMenu() {
             2  -> listNotes()
             3  -> updateNote()
             4  -> deleteNote()
+            5 -> save()
+            6-> load()
             0  -> exitApp()
             else -> println("Invalid option entered: $option ")
 
@@ -101,7 +107,21 @@ fun deleteNote(){
         }
     }
 }
+fun save() {
+    try {
+        noteAPI.store()
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
 
+fun load() {
+    try {
+        noteAPI.load()
+    } catch (e: Exception) {
+        System.err.println("Error reading from file: $e")
+    }
+}
 fun exitApp(){
     logger.info { "ExitApp() function invoked" }
     exit(0)
