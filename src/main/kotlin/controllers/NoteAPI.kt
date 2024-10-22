@@ -140,6 +140,15 @@ class NoteAPI(serializerType: Serializer) {
         return false
 
     }
+    fun archiveNote(indexToArchive: Int): Boolean {
+        val foundNote = findNote(indexToArchive)
+        if (foundNote != null) {
+            foundNote.isNoteArchived = true
+            return true
+        }
+            return false
+
+    }
 
 }
 

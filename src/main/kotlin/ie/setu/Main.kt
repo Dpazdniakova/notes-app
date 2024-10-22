@@ -22,11 +22,12 @@ fun mainMenu() : Int {
           ----------------------------------
           | NOTE MENU                      |
           |   1) Add a note                |
-          |   2) List all notes            |
+          |   2) List notes                |
           |   3) Update a note             |
           |   4) Delete a note             |
           |   5) Save notes                |
           |   6) Load notes                |
+          |   7) Archive a note            |
           ----------------------------------
           |   0) Exit                      |
           ----------------------------------
@@ -43,7 +44,8 @@ fun runMenu() {
             3  -> updateNote()
             4  -> deleteNote()
             5 -> save()
-            6-> load()
+            6 -> load()
+            7 -> archiveNote()
             0  -> exitApp()
             else -> println("Invalid option entered: $option ")
 
@@ -67,7 +69,24 @@ fun addNote(){
 }
 
 fun listNotes(){
-  println(noteAPI.listAllNotes())
+    println("Sub-Menu:")
+    println("1. List all notes")
+    println("2. List active notes")
+    println("3. List archived notes")
+    println("0. Exit")
+    do {
+        val option = readNextInt("Enter option: ")
+        when (option) {
+            1  -> println(noteAPI.listAllNotes())
+            2  -> println(noteAPI.listActiveNotes())
+            3  -> println(noteAPI.listArchivedNotes())
+            0 -> runMenu()
+            else -> println("Invalid option entered: $option ")
+
+        }
+
+
+    } while (true)
 }
 
 fun updateNote() {
@@ -92,7 +111,22 @@ fun updateNote() {
         }
     }
 }
-
+fun archiveNote() {
+    println(noteAPI.listActiveNotes())
+    if (noteAPI.numberOfNotes() > 0) {
+        val indexToArchive = readNextInt("Enter the index of the note to archive: ")
+        if (noteAPI.isValidIndex(indexToArchive)) {
+            //pass the index of the note and the new note details to NoteAPI for updating and check for success.
+            if (noteAPI.archiveNote(indexToArchive)){
+                println("Update Successful")
+            } else {
+                println("Update Failed")
+            }
+        } else {
+            println("There are no notes for this index number")
+        }
+    }
+}
 
 fun deleteNote(){
 //    logger.info { "deleteNote() function invoked" }
@@ -107,6 +141,7 @@ fun deleteNote(){
         }
     }
 }
+
 fun save() {
     try {
         noteAPI.store()
