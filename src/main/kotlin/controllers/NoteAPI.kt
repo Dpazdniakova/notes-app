@@ -7,6 +7,7 @@ class NoteAPI {
     fun add(note: Note): Boolean {
         return notes.add(note)
     }
+
     fun listAllNotes(): String {
         return if (notes.isEmpty()) {
             "No notes stored"
@@ -18,6 +19,7 @@ class NoteAPI {
             listOfNotes
         }
     }
+
     fun numberOfNotes(): Int {
         return notes.size
     }
@@ -27,8 +29,12 @@ class NoteAPI {
             notes[index]
         } else null
     }
+
     fun isValidListIndex(index: Int, list: List<Any>): Boolean {
         return (index >= 0 && index < list.size)
+    }
+    fun isValidIndex(index: Int) :Boolean{
+        return isValidListIndex(index, notes);
     }
     fun listActiveNotes(): String {
         var activeNotes = ""
@@ -43,14 +49,15 @@ class NoteAPI {
             activeNotes
         }
     }
+
     fun listArchivedNotes(): String {
         var archivedNotes = ""
         for (note in notes) {
             if (note.isNoteArchived) {
-                archivedNotes  += "${notes.indexOf(note)}: $note \n"
+                archivedNotes += "${notes.indexOf(note)}: $note \n"
             }
         }
-        return if (archivedNotes .isEmpty()) {
+        return if (archivedNotes.isEmpty()) {
             "No archived notes"
         } else {
             archivedNotes
@@ -67,6 +74,7 @@ class NoteAPI {
         return n
 
     }
+
     fun numberOfActiveNotes(): Int {
         var n = 0
         for (note in notes) {
@@ -76,13 +84,14 @@ class NoteAPI {
         }
         return n
     }
+
     fun listNotesByPriority(priority: Int): String {
         return if (notes.isEmpty()) {
             "No notes stored"
         } else {
             var listOfNotes = ""
             for (note in notes) {
-                if (note.notePriority == priority){
+                if (note.notePriority == priority) {
                     listOfNotes += "${notes.indexOf(note)}: ${note}"
                 }
             }
@@ -99,12 +108,24 @@ class NoteAPI {
         }
         return n
     }
+
     fun deleteNote(indexToDelete: Int): Note? {
-       return if (isValidListIndex(indexToDelete, notes)) {
-           notes.removeAt(indexToDelete)
-       } else null
+        return if (isValidListIndex(indexToDelete, notes)) {
+            notes.removeAt(indexToDelete)
+        } else null
 
     }
 
+    fun updateNote(indexToUpdate: Int, note: Note?): Boolean {
+        val foundNote = findNote(indexToUpdate)
+        if ((foundNote != null) && (note != null)) {
+            foundNote.noteTitle = note.noteTitle
+            foundNote.notePriority = note.notePriority
+            foundNote.noteCategory = note.noteCategory
+            return true
+        }
+        return false
+
+    }
 }
 
