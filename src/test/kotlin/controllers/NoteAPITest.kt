@@ -93,6 +93,13 @@ class NoteAPITest {
 
     @Nested
     inner class ListNoteType {
+
+        @Test
+        fun numberOfNotesCalculatedCorrectly() {
+            assertEquals(5, populatedNotes!!.numberOfNotes())
+            assertEquals(0, emptyNotes!!.numberOfNotes())
+        }
+
         @Test
         fun `listActiveNotes no active notes`() {
             val result = emptyNotes?.listActiveNotes()
