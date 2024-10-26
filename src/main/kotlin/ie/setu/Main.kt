@@ -28,6 +28,7 @@ fun mainMenu() : Int {
           |   5) Save notes                |
           |   6) Load notes                |
           |   7) Archive a note            |
+          |   8) Search by Title           |
           ----------------------------------
           |   0) Exit                      |
           ----------------------------------
@@ -46,6 +47,7 @@ fun runMenu() {
             5 -> save()
             6 -> load()
             7 -> archiveNote()
+            8 -> searchByDescription()
             0  -> exitApp()
             else -> println("Invalid option entered: $option ")
 
@@ -55,6 +57,12 @@ fun runMenu() {
     } while (true)
 
 }
+
+fun searchByDescription() {
+    val noteTitle= readNextLine("Enter the title of your note: ")
+    return println(noteAPI.searchByTitle(noteTitle))
+}
+
 fun addNote(){
    val noteTitle= readNextLine("Enter the title of your note: ")
     val notePriority = readNextInt("Enter a priority (1-low, 2, 3, 4, 5-high): ")
