@@ -75,13 +75,13 @@ fun listNotes(){
     println("3. List archived notes")
     println("0. Exit")
     do {
-        val option = readNextInt("Enter option: ")
-        when (option) {
+        val option1 = readNextInt("Enter option: ")
+        when (option1) {
             1  -> println(noteAPI.listAllNotes())
             2  -> println(noteAPI.listActiveNotes())
             3  -> println(noteAPI.listArchivedNotes())
             0 -> runMenu()
-            else -> println("Invalid option entered: $option ")
+            else -> println("Invalid option entered: $option1 ")
 
         }
 
