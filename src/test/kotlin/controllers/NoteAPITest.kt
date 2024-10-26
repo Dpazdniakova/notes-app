@@ -165,7 +165,7 @@ class NoteAPITest {
         @Test
         fun `test listNotesByPriority with notes`() {
             assertTrue(
-                populatedNotes!!.listNotesByPriority(5).lowercase().contains(learnKotlin?.noteTitle!!.lowercase())
+                populatedNotes!!.listNotesByPriority(5).contains(learnKotlin?.noteTitle!!)
             )
 
         }
@@ -177,7 +177,33 @@ class NoteAPITest {
 
         }
 
+        @Test
+        fun `listNotesBySelectedPriority returns no notes when no notes of that priority exist`() {
+            assertEquals(5, populatedNotes!!.numberOfNotes())
+            assertTrue(populatedNotes!!.listNotesByPriority(2).contains("No notes"))
+        }
+
+        @Test
+        fun `listNotesBySelectedPriority returns all notes that match that priority when notes of that priority exist`() {
+            //Priority 1 (1 note), 2 (none), 3 (1 note). 4 (2 notes), 5 (1 note)
+            assertEquals(5, populatedNotes!!.numberOfNotes())
+            val priority1String = populatedNotes!!.listNotesByPriority(1)
+            assertTrue(priority1String.contains("Summer Holiday"))
+            assertFalse(priority1String.contains("swim"))
+            assertFalse(priority1String.contains("learning kotlin"))
+            assertFalse(priority1String.contains("code app"))
+            assertFalse(priority1String.contains("test app"))
+
+
+            val priority4String = populatedNotes!!.listNotesByPriority(4).lowercase()
+            assertFalse(priority4String.contains("swim"))
+            assertTrue(priority4String.contains("code app"))
+            assertTrue(priority4String.contains("test app"))
+            assertFalse(priority4String.contains("learning kotlin"))
+            assertFalse(priority4String.contains("summer holiday"))
+        }
     }
+
 
     @Nested
     inner class DeleteNotes {
@@ -328,5 +354,32 @@ inner class ArchivedTests {
     }
 
    }
+ @Nested
+ inner class SearchMethods {
 
+     @Test
+     fun `returns note when a single note with the title exists`() {
+
+         val result = populatedNotes!!.searchByTitle("Learning Kotlin")
+
+         assertTrue(result.contains("Learning Kotlin"))
+     }
+
+     @Test
+     fun `returns all notes when multiple notes with the title exist`() {
+         val newNote = Note("Learning Kotlin", 1, "learning", false)
+         populatedNotes!!.add(newNote)
+         val result = populatedNotes!!.searchByTitle("Learning Kotlin")
+         assertTrue(result.contains("Learning"))
+         assertTrue(result.contains("College"))
+     }
+     @Test
+     fun `returns No notes when no notes with the title exist` () {
+         val result = emptyNotes!!.searchByTitle("Learning Kotlin")
+         assertTrue(result.contains("No notes"))
+
+     }
+ }
 }
+
+
