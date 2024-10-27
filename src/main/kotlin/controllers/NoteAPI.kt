@@ -51,20 +51,9 @@ class NoteAPI(serializerType: Serializer) {
         else formatListString(notes.filter { note -> note.isNoteArchived})
 
 
-    fun numberOfArchivedNotes(): Int {
-        return notes.stream()
-            .filter{note: Note -> note.isNoteArchived}
-            .count()
-            .toInt()
+    fun numberOfArchivedNotes() : Int = notes.count { note: Note -> note.isNoteArchived }
 
-    }
-
-    fun numberOfActiveNotes(): Int {
-        return notes.stream()
-            .filter{note: Note -> !note.isNoteArchived}
-            .count()
-            .toInt()
-    }
+    fun numberOfActiveNotes() : Int = notes.count { note: Note -> !note.isNoteArchived }
 
     fun listNotesByPriority(priority: Int): String =
         if (notes.isEmpty()) "No notes stored"
@@ -74,12 +63,9 @@ class NoteAPI(serializerType: Serializer) {
             else "${numberOfNotesByPriority(priority)} notes with priority $priority: $listOfNotes"
         }
 
-    fun numberOfNotesByPriority(priority: Int): Int {
-        return notes.stream()
-            .filter{note: Note-> priority ==note.notePriority }
-            .count()
-            .toInt()
-    }
+    fun numberOfNotesByPriority(priority: Int): Int = notes.
+            count {note: Note-> priority ==note.notePriority }
+
 
     fun deleteNote(indexToDelete: Int): Note? {
         return if (isValidListIndex(indexToDelete, notes)) {
