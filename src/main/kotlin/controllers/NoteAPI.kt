@@ -23,8 +23,7 @@ class NoteAPI(serializerType: Serializer) {
 
     fun listAllNotes(): String =
         if  (notes.isEmpty()) "No notes stored"
-        else notes.joinToString (separator = "\n") { note ->
-            notes.indexOf(note).toString() + ": " + note.toString() }
+    else formatListString(notes)
 
 
     fun numberOfNotes(): Int {
@@ -43,31 +42,14 @@ class NoteAPI(serializerType: Serializer) {
     fun isValidIndex(index: Int) :Boolean{
         return isValidListIndex(index, notes);
     }
-    fun listActiveNotes(): String {
-        val activeNotes = notes
-            .filter { !it.isNoteArchived }
-            .mapIndexed { index, note -> "$index: $note" }
-            .joinToString("\n")
+   fun listActiveNotes(): String =
+        if  (numberOfActiveNotes() == 0)  "No active notes"
+        else formatListString(notes.filter { note -> !note.isNoteArchived})
 
-        return if (activeNotes.isEmpty()) {
-            "No active notes"
-        } else {
-            activeNotes
-        }
-    }
+    fun listArchivedNotes(): String =
+        if  (numberOfArchivedNotes() == 0) "No archived notes"
+        else formatListString(notes.filter { note -> note.isNoteArchived})
 
-    fun listArchivedNotes(): String {
-        val archivedNotes = notes
-            .filter {!it.isNoteArchived}
-            .mapIndexed {index,note -> "$index: $note"}
-            .joinToString { "\n" }
-
-        return if (archivedNotes.isEmpty()) {
-            "No archived notes"
-        } else {
-            archivedNotes
-        }
-    }
 
     fun numberOfArchivedNotes(): Int {
         return notes.stream()
@@ -84,18 +66,13 @@ class NoteAPI(serializerType: Serializer) {
             .toInt()
     }
 
-    fun listNotesByPriority(priority: Int): String {
-        val listOfNotes = notes
-            .filter { it.notePriority == priority }
-            .mapIndexed { index, note -> "$index: $note" }
-            .joinToString("")
-
-        return if (listOfNotes.isEmpty()) {
-            "No notes"
-        } else {
-            listOfNotes
+    fun listNotesByPriority(priority: Int): String =
+        if (notes.isEmpty()) "No notes stored"
+        else {
+            val listOfNotes = formatListString(notes.filter{ note -> note.notePriority == priority})
+            if (listOfNotes.isEmpty()) "No notes with priority: $priority"
+            else "${numberOfNotesByPriority(priority)} notes with priority $priority: $listOfNotes"
         }
-    }
 
     fun numberOfNotesByPriority(priority: Int): Int {
         return notes.stream()
@@ -133,9 +110,8 @@ class NoteAPI(serializerType: Serializer) {
     }
 
     fun searchByTitle ( title: String) : String {
-        val notes = notes.filter {title== it.noteTitle}
-            .mapIndexed{index, it -> "$index: $it"  }
-            .joinToString("\n")
+        val notes =   formatListString(
+            notes.filter { note -> note.noteTitle.contains(title, ignoreCase = true) })
 
         return if (notes.isEmpty()) {
             "No notes"
@@ -143,6 +119,11 @@ class NoteAPI(serializerType: Serializer) {
             notes
         }
     }
+
+    private fun formatListString(notesToFormat : List<Note>) : String =
+        notesToFormat
+            .joinToString (separator = "\n") { note ->
+                notes.indexOf(note).toString() + ": " + note.toString() }
 
 }
 
