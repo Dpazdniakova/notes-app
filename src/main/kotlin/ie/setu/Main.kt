@@ -5,10 +5,14 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import models.Note
 import persistence.JSONSerializer
 import persistence.XMLSerializer
+import utils.isValidStatus
 import utils.readNextInt
 import utils.readNextLine
+import utils.validRange
 import java.io.File
 import java.lang.System.exit
+import java.time.LocalDateTime
+
 private val noteAPI = NoteAPI(JSONSerializer(File("notes.json")))
 val logger = KotlinLogging.logger {}
 fun main() {
@@ -65,16 +69,45 @@ fun searchByDescription() {
 
 fun addNote(){
    val noteTitle= readNextLine("Enter the title of your note: ")
-    val notePriority = readNextInt("Enter a priority (1-low, 2, 3, 4, 5-high): ")
     val noteCategory = readNextLine("Enter a category for the note: ")
-    val isAdded = noteAPI.add(Note(noteTitle, notePriority, noteCategory, false))
- if (isAdded) {
+    val noteContents = readNextLine("Enter note content: ")
+    var noteStatus: String
+    var notePriority : Int
+    val localTime : LocalDateTime = LocalDateTime.now()
+    do {
+        try {
+            notePriority = readNextInt("Enter a priority (1-low, 2, 3, 4, 5-high): ")
+            if (!validRange(notePriority)) throw IllegalArgumentException("Priority must be between 1 and 5.")
+            break
+        } catch (e: IllegalArgumentException) {
+            println("Invalid input: ${e.message}.")
+        } catch (e: Exception) {
+            println("An unexpected error occurred: ${e.message}")
+        }
+    } while (true)
+    do {
+        try {
+            noteStatus = readNextLine("Enter note status (TODO, DONE, DOING): ")
+            if (!isValidStatus(noteStatus)) throw IllegalArgumentException("Status must be one of the following: TODO, DONE, DOING.")
+            break
+        } catch (e: IllegalArgumentException) {
+            println("Invalid input: ${e.message}.")
+        } catch (e: Exception) {
+            println("An unexpected error occurred: ${e.message}")
+        }
+    } while (true)
+
+
+    val isAdded = noteAPI.add(Note(noteTitle, notePriority, noteCategory, false, noteContents, noteStatus, localTime, localTime))
+
+    if (isAdded) {
      println("Successfully added ")
- }
+
+    }
     else {
         println("Add failed")
     }
-}
+  }
 
 fun listNotes(){
     println("Sub-Menu:")
@@ -82,6 +115,7 @@ fun listNotes(){
     println("2. List active notes")
     println("3. List archived notes")
     println("0. Exit")
+    val switch  = true
     do {
         val option1 = readNextInt("Enter option: ")
         when (option1) {
@@ -94,22 +128,40 @@ fun listNotes(){
         }
 
 
-    } while (true)
+    } while (switch)
 }
 
 fun updateNote() {
-    //logger.info { "updateNotes() function invoked" }
-    listNotes()
+
     if (noteAPI.numberOfNotes() > 0) {
-        //only ask the user to choose the note if notes exist
+        println(noteAPI.listActiveNotes())
         val indexToUpdate = readNextInt("Enter the index of the note to update: ")
         if (noteAPI.isValidIndex(indexToUpdate)) {
             val noteTitle = readNextLine("Enter a title for the note: ")
-            val notePriority = readNextInt("Enter a priority (1-low, 2, 3, 4, 5-high): ")
             val noteCategory = readNextLine("Enter a category for the note: ")
+            val noteContent= readNextLine("Enter note contents: ")
+            var noteStatus: String
+            var notePriority : Int
+            do {
+                try {
+                    notePriority = readNextInt("Enter a priority (1-low, 2, 3, 4, 5-high): ")
+                    if (!validRange(notePriority)) throw IllegalArgumentException("Priority must be between 1 and 5.")
+                    break
+                } catch (e: IllegalArgumentException) {
+                    println("Invalid input: ${e.message}")
+                }
+            } while (true)
+            do {
+                try {
+                    noteStatus = readNextLine("Enter note status (TODO, DONE, DOING): ")
+                    if (!isValidStatus(noteStatus)) throw IllegalArgumentException("Status must be one of the following: TODO, DONE, DOING.")
+                    break
+                } catch (e: IllegalArgumentException) {
+                    println("Invalid input: ${e.message}")
+                }
+            } while (true)
 
-            //pass the index of the note and the new note details to NoteAPI for updating and check for success.
-            if (noteAPI.updateNote(indexToUpdate, Note(noteTitle, notePriority, noteCategory, false))){
+            if (noteAPI.updateNote(indexToUpdate, Note(noteTitle, notePriority, noteCategory, false, NoteStatus = noteStatus, NoteContents = noteContent))){
                 println("Update Successful")
             } else {
                 println("Update Failed")

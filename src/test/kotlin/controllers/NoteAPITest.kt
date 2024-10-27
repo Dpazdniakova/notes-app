@@ -23,11 +23,13 @@ class NoteAPITest {
 
     @BeforeEach
     fun setup() {
-        learnKotlin = Note("Learning Kotlin", 5, "College", false)
-        summerHoliday = Note("Summer Holiday to France", 1, "Holiday", false)
-        codeApp = Note("Code App", 4, "Work", false)
-        testApp = Note("Test App", 4, "Work", false)
-        swim = Note("Swim - Pool", 3, "Hobby", false)
+        learnKotlin = Note(
+            "Learning Kotlin", 5, "College", false, "Learn kotlin syntax", "TODO"
+        )
+        summerHoliday = Note("Summer Holiday to France", 1, "Holiday", false, "Visit Paris","Done")
+        codeApp = Note("Code App", 4, "Work", false, "Finish writing class", "TODO")
+        testApp = Note("Test App", 4, "Work", false, "Write tests for all functions", "TODO")
+        swim = Note("Swim - Pool", 3, "Hobby", false, "Plan for the weekend", "Doing")
 
         //adding 5 Note to the notes api
         populatedNotes!!.add(learnKotlin!!)
@@ -52,7 +54,7 @@ class NoteAPITest {
     inner class AddNotes {
         @Test
         fun `adding a Note to a populated list adds to ArrayList`() {
-            val newNote = Note("Study Lambdas", 1, "College", false)
+            val newNote = Note("Study Lambdas", 1, "College", false, "Lambdas are a shorter way of writing functions", "TODO")
             assertEquals(5, populatedNotes!!.numberOfNotes())
             assertTrue(populatedNotes!!.add(newNote))
             assertEquals(6, populatedNotes!!.numberOfNotes())
@@ -61,7 +63,7 @@ class NoteAPITest {
 
         @Test
         fun `adding a Note to an empty list adds to ArrayList`() {
-            val newNote = Note("Study Lambdas", 1, "College", false)
+            val newNote = Note("Study Lambdas", 1, "College", false, "Lambdas are a shorter way of writing functions", "TODO")
             assertEquals(0, emptyNotes!!.numberOfNotes())
             assertTrue(emptyNotes!!.add(newNote))
             assertEquals(1, emptyNotes!!.numberOfNotes())
@@ -108,7 +110,7 @@ class NoteAPITest {
 
         @Test
         fun `listActiveNotes with active notes`() {
-            val newNote = Note("Learn Kotlin", 1, "Education", false)
+            val newNote = Note("Learn Kotlin", 1, "Education", false, "Learn kotlin syntax", "TODO")
             populatedNotes!!.add(newNote)
             assertTrue(populatedNotes!!.listActiveNotes().lowercase().contains(newNote.noteTitle.lowercase()))
 
@@ -123,7 +125,7 @@ class NoteAPITest {
 
         @Test
         fun `listArchivedNotes with archived notes`() {
-            val newNote = Note("Learn Kotlin", 1, "Education", true)
+            val newNote = Note("Learn Kotlin", 1, "Education", true, "Learn kotlin syntax", "TODO")
             populatedNotes?.add(newNote)
             assertTrue(populatedNotes!!.listArchivedNotes().lowercase().contains(newNote.noteTitle.lowercase()))
 
@@ -133,12 +135,12 @@ class NoteAPITest {
         fun testNumberOfArchivedNotes() {
             assertEquals(0, emptyNotes?.numberOfArchivedNotes())
 
-            val note1 = Note("Active Note 1", 1, "Tests", true)
+            val note1 = Note("Active Note 1", 1, "Tests", true, "Learn kotlin syntax", "TODO")
             emptyNotes?.add(note1)
 
             assertEquals(1, emptyNotes?.numberOfArchivedNotes())
 
-            val note2 = Note("Active Note 2", 1, "Tests", true)
+            val note2 = Note("Active Note 2", 1, "Tests", true, "Learn kotlin syntax", "TODO")
             emptyNotes?.add(note2)
 
             assertEquals(2, emptyNotes?.numberOfArchivedNotes())
@@ -146,7 +148,7 @@ class NoteAPITest {
 
         @Test
         fun testNumberOfActiveNotes() {
-            val note1 = Note("Active Note 1", 1, "Tests", true)
+            val note1 = Note("Active Note 1", 1, "Tests", true, "Learn kotlin syntax", "TODO")
             emptyNotes?.add(note1)
 
             assertEquals(0, emptyNotes?.numberOfActiveNotes())
@@ -229,9 +231,9 @@ class NoteAPITest {
     inner class UpdateNotes {
         @Test
         fun `updating a note that does not exist returns false`() {
-            assertFalse(populatedNotes!!.updateNote(6, Note("Updating Note", 2, "Work", false)))
-            assertFalse(populatedNotes!!.updateNote(-1, Note("Updating Note", 2, "Work", false)))
-            assertFalse(emptyNotes!!.updateNote(0, Note("Updating Note", 2, "Work", false)))
+            assertFalse(populatedNotes!!.updateNote(6, Note("Updating Note", 2, "Work", false, "Learn kotlin syntax", "TODO")))
+            assertFalse(populatedNotes!!.updateNote(-1, Note("Updating Note", 2, "Work", false, "Learn kotlin syntax", "TODO")))
+            assertFalse(emptyNotes!!.updateNote(0, Note("Updating Note", 2, "Work", false, "Learn kotlin syntax", "TODO")))
         }
 
         @Test
@@ -243,7 +245,7 @@ class NoteAPITest {
             assertEquals("Hobby", populatedNotes!!.findNote(4)!!.noteCategory)
 
             //update note 5 with new information and ensure contents updated successfully
-            assertTrue(populatedNotes!!.updateNote(4, Note("Updating Note", 2, "College", false)))
+            assertTrue(populatedNotes!!.updateNote(4, Note("Updating Note", 2, "College", false, "Learn kotlin syntax", "TODO")))
             assertEquals("Updating Note", populatedNotes!!.findNote(4)!!.noteTitle)
             assertEquals(2, populatedNotes!!.findNote(4)!!.notePriority)
             assertEquals("College", populatedNotes!!.findNote(4)!!.noteCategory)
@@ -367,7 +369,7 @@ inner class ArchivedTests {
 
      @Test
      fun `returns all notes when multiple notes with the title exist`() {
-         val newNote = Note("Learning Kotlin", 1, "learning", false)
+         val newNote = Note("Learning Kotlin", 1, "learning", false, "Learn kotlin syntax", "TODO")
          populatedNotes!!.add(newNote)
          val result = populatedNotes!!.searchByTitle("Learning Kotlin")
          assertTrue(result.contains("Learning"))
